@@ -30,7 +30,13 @@ func NewLoginServer(authenticator LoginAuthenticator) Server {
 func (a *loginServer) Next(response []byte) (challenge []byte, done bool, err error) {
 	switch a.state {
 	case loginNotStarted:
+          if len(response) > 0 {
+                a.state = loginWaitingUsername
+		a.username = string(response)
+		challenge = []byte("Password:")
+          } else {
 		challenge = []byte("Username:")
+          }
 	case loginWaitingUsername:
 		a.username = string(response)
 		challenge = []byte("Password:")
